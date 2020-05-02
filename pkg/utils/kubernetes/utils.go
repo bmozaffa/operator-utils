@@ -8,14 +8,15 @@ import (
 	"sigs.k8s.io/controller-runtime/pkg/client/config"
 )
 
-func CustomResourceDefinitionExists(gvk schema.GroupVersionKind, cfg *rest.Config) (bool, error) {
-	var err error
-	if cfg == nil {
-		cfg, err = config.GetConfig()
-		if err != nil {
-			return false, err
-		}
+func CustomResourceDefinitionExists(gvk schema.GroupVersionKind) (bool, error) {
+	cfg, err := config.GetConfig()
+	if err != nil {
+		return false, err
 	}
+	return customResourceDefinitionExists(gvk, cfg)
+}
+
+func customResourceDefinitionExists(gvk schema.GroupVersionKind, cfg *rest.Config) (bool, error) {
 	client, err := discovery.NewDiscoveryClientForConfig(cfg)
 	if err != nil {
 		return false, err
